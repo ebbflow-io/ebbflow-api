@@ -1,0 +1,119 @@
+openapi: '3.0.2'
+info:
+  title: Ebbflow API (v1)
+  version: '1.0'
+servers:
+  - url: https://api.ebbflow.io/v1
+
+components:
+  schemas:
+    key_request_context:
+      properties:
+        suggested_key_name:
+          type: string
+    key_request_id:
+      type: string
+      pattern: '^kr_'
+    key_data:
+      type: object
+      properties:
+        key_name:
+          type: string
+        key:
+          type: string
+          format: binary
+      required:
+        - key
+        - key_name
+    key_request:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/key_request_id'
+        private:
+          type: string
+      required:
+        - id
+        - private
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+        - message
+  responses:
+    new_key_request_response:
+      description: key_request from a key_request call
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/key_request'
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotReady:
+      description: The specified resource is not ready yet
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    key_request_id_param:
+      name: id
+      in: path
+      required: true
+      description: The id of the KeyRequest object
+      schema:
+        $ref: '#/components/schemas/key_request_id'
+paths:
+  /keyrequest:
+    post:
+      security: []   # No security
+      operationId: newKeyRequest
+      description: Create a new Key Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/key_request_context'
+      responses:
+        '200':
+          description: New key_request Object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/key_request'
+  /keyrequest/{id}:
+    post:
+      security: []   # No security
+      operationId: getKeyRequest
+      description: Retrieve the key_data from a key_request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/key_request'
+      parameters:
+        - $ref: '#/components/parameters/key_request_id_param'
+      responses:
+        '200':
+          description: The key_data for the key_request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/key_data'
+        '202':
+          $ref: '#/components/responses/NotReady'
+        '404':
+          $ref: '#/components/responses/NotFound'
