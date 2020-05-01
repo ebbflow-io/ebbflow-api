@@ -13,7 +13,6 @@ components:
           type: string
     key_request_id:
       type: string
-      pattern: '^kr_'
     key_data:
       type: object
       properties:
