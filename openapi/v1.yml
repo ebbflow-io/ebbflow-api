@@ -13,6 +13,8 @@ components:
           type: string
         account_id:
           type: string
+      required:
+      - suggested_key_name
     key_request_id:
       type: string
     key_data:

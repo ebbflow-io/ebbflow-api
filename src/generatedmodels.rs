@@ -29,8 +29,7 @@ impl Error {
 #[cfg_attr(feature = "conversion", derive(LabelledGeneric))]
 pub struct HostKeyInitContext {
     #[serde(rename = "suggested_key_name")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub suggested_key_name: Option<String>,
+    pub suggested_key_name: String,
 
     #[serde(rename = "account_id")]
     #[serde(skip_serializing_if="Option::is_none")]
@@ -39,9 +38,9 @@ pub struct HostKeyInitContext {
 }
 
 impl HostKeyInitContext {
-    pub fn new() -> HostKeyInitContext {
+    pub fn new(suggested_key_name: String, ) -> HostKeyInitContext {
         HostKeyInitContext {
-            suggested_key_name: None,
+            suggested_key_name: suggested_key_name,
             account_id: None,
         }
     }
