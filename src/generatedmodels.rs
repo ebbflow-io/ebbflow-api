@@ -27,20 +27,22 @@ impl Error {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "conversion", derive(LabelledGeneric))]
-pub struct KeyData {
-    #[serde(rename = "key_name")]
-    pub key_name: String,
+pub struct HostKeyInitContext {
+    #[serde(rename = "suggested_key_name")]
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub suggested_key_name: Option<String>,
 
-    #[serde(rename = "key")]
-    pub key: swagger::ByteArray,
+    #[serde(rename = "account_id")]
+    #[serde(skip_serializing_if="Option::is_none")]
+    pub account_id: Option<String>,
 
 }
 
-impl KeyData {
-    pub fn new(key_name: String, key: swagger::ByteArray, ) -> KeyData {
-        KeyData {
-            key_name: key_name,
-            key: key,
+impl HostKeyInitContext {
+    pub fn new() -> HostKeyInitContext {
+        HostKeyInitContext {
+            suggested_key_name: None,
+            account_id: None,
         }
     }
 }
@@ -48,7 +50,7 @@ impl KeyData {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "conversion", derive(LabelledGeneric))]
-pub struct KeyRequest {
+pub struct HostKeyInitFinalizationContext {
     #[serde(rename = "id")]
     pub id: String,
 
@@ -57,9 +59,9 @@ pub struct KeyRequest {
 
 }
 
-impl KeyRequest {
-    pub fn new(id: String, private: String, ) -> KeyRequest {
-        KeyRequest {
+impl HostKeyInitFinalizationContext {
+    pub fn new(id: String, private: String, ) -> HostKeyInitFinalizationContext {
+        HostKeyInitFinalizationContext {
             id: id,
             private: private,
         }
@@ -69,17 +71,16 @@ impl KeyRequest {
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "conversion", derive(LabelledGeneric))]
-pub struct KeyRequestContext {
-    #[serde(rename = "suggested_key_name")]
-    #[serde(skip_serializing_if="Option::is_none")]
-    pub suggested_key_name: Option<String>,
+pub struct KeyData {
+    #[serde(rename = "key")]
+    pub key: String,
 
 }
 
-impl KeyRequestContext {
-    pub fn new() -> KeyRequestContext {
-        KeyRequestContext {
-            suggested_key_name: None,
+impl KeyData {
+    pub fn new(key: String, ) -> KeyData {
+        KeyData {
+            key: key,
         }
     }
 }

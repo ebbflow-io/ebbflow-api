@@ -7,24 +7,22 @@ servers:
 
 components:
   schemas:
-    key_request_context:
+    host_key_init_context:
       properties:
         suggested_key_name:
+          type: string
+        account_id:
           type: string
     key_request_id:
       type: string
     key_data:
       type: object
       properties:
-        key_name:
-          type: string
         key:
           type: string
-          format: binary
       required:
         - key
-        - key_name
-    key_request:
+    host_key_init_finalization_context:
       type: object
       properties:
         id:
@@ -42,12 +40,12 @@ components:
       required:
         - message
   responses:
-    new_key_request_response:
-      description: key_request from a key_request call
+    host_key_init_finalization_context_response:
+      description: host_key_init_finalization_context from a hostkeyinit call, and used to finalize a key init
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/key_request'
+            $ref: '#/components/schemas/host_key_init_finalization_context'
     NotFound:
       description: The specified resource was not found
       content:
@@ -75,39 +73,35 @@ components:
       schema:
         $ref: '#/components/schemas/key_request_id'
 paths:
-  /keyrequest:
+  /hostkeyinit:
     post:
       security: []   # No security
-      operationId: newKeyRequest
+      operationId: createHostKeyInit
       description: Create a new Key Request
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/key_request_context'
+              $ref: '#/components/schemas/host_key_init_context'
       responses:
         '200':
-          description: New key_request Object
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/key_request'
-  /keyrequest/{id}:
+          $ref: '#/components/responses/host_key_init_finalization_context_response'
+  /hostkeyinit/{id}:
     post:
       security: []   # No security
-      operationId: getKeyRequest
-      description: Retrieve the key_data from a key_request
+      operationId: finalizeHostKeyInit
+      description: Retrieve the key_data from a host_key_init_finalization_context
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/key_request'
+              $ref: '#/components/schemas/host_key_init_finalization_context'
       parameters:
         - $ref: '#/components/parameters/key_request_id_param'
       responses:
         '200':
-          description: The key_data for the key_request
+          description: The key_data from the host_key_init_finalization_context
           content:
             application/json:
               schema:
