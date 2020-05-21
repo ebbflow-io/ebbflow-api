@@ -1,12 +1,11 @@
 #![allow(unused_imports, unused_qualifications, unused_extern_crates)]
 extern crate chrono;
 
+use serde::{Serialize, Deserialize};
 use serde::ser::Serializer;
 
 use std::collections::HashMap;
-use swagger;
 use std::string::ParseError;
-
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "conversion", derive(LabelledGeneric))]
